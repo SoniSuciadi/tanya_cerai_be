@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String     @unique
+  name          String
+  phone_number  String
+  password      String
+  refresh_token String?
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @default(now())
+  deleted_at    DateTime?
+  created_by    String?
+  updated_by    String?
+  deleted_by    String?
+  sessions      sessions[]
+  orders        orders[]
+}
+
+model packages {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  price      Decimal
+  session    String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  deleted_at DateTime?
+  created_by String?
+  updated_by String?
+  deleted_by String?
+  service    Json
+  orders     orders[]
+}
+
+model sessions {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  deleted_at DateTime?
+  created_by String?
+  updated_by String?
+  deleted_by String?
+  user_id    String    @db.Uuid
+  user       users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  chats      chats[]
+
+  @@index([user_id])
+}
+
+model chats {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  text       String
+  session_id String?   @db.Uuid
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  deleted_at DateTime?
+  sender     String?
+  created_by String?
+  updated_by String?
+  deleted_by String?
+  sessions   sessions? @relation(fields: [session_id], references: [id], onDelete: Cascade)
+}
+
+model orders {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String    @db.Uuid
+  package_id     String    @db.Uuid
+  payment_url    String
+  paid_date      DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @default(now())
+  deleted_at     DateTime?
+  created_by     String?
+  updated_by     String?
+  deleted_by     String?
+  payment_status String
+  user           users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  package        packages  @relation(fields: [package_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([package_id])
+}
