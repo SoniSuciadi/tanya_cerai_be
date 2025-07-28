@@ -5,3 +5,11 @@ export interface ChatResponseDto {
   lastMessage: string;
   timestamp: Date;
 }
+
+export interface Message {
+  count: number;
+  id: string;
+  content: string;
+  sender: 'user' | 'consultant';
+  timestamp: Date;
+}

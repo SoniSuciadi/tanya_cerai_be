@@ -32,3 +32,13 @@ export class ChatQueryDto {
   @IsString()
   orderBy: string;
 }
+
+export class ChatListQueryDto {
+  @IsOptional()
+  @IsNumber()
+  page: number;
+
+  @IsOptional()
+  @IsNumber()
+  rowsPerPage: number;
+}

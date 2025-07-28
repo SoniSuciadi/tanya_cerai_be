@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/common/database/database.service';
-import { ChatQueryDto, SendMessageDto } from './chat.dto';
-import { ChatResponseDto } from './chat.response.dto';
+import { ChatListQueryDto, ChatQueryDto, SendMessageDto } from './chat.dto';
+import { ChatResponseDto, Message } from './chat.response.dto';
 
 @Injectable()
 export class ChatService {
@@ -48,6 +48,30 @@ export class ChatService {
       search,
       perPage: rowsPerPage,
       offset,
+    });
+  }
+  async chatList(id: string, queries: ChatListQueryDto): Promise<Message[]> {
+    const { page, rowsPerPage } = queries;
+    const offset = (page - 1) * rowsPerPage;
+
+    const whereQuery: string[] = [`deleted_at IS NULL`, `session_id =$<id>`];
+
+    const q = `SELECT
+      COUNT(*) OVER () AS count,
+      id,
+      text AS "content",
+      sender,
+      created_at AS "timestamp"
+    FROM
+      chats
+    WHERE ${whereQuery.join(' AND ')}
+    ORDER BY created_at DESC
+    LIMIT $<perPage> OFFSET $<offset>
+`;
+    return await this.databaseService.db.manyOrNone<Message>(q, {
+      perPage: rowsPerPage,
+      offset,
+      id,
     });
   }
 }

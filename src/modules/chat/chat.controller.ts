@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatQueryDto, SendMessageDto } from './chat.dto';
 
@@ -8,7 +8,6 @@ export class ChatController {
   @Get('chat-room')
   async chatRoom(@Query() query: ChatQueryDto) {
     const data = await this.chatService.chatRoom(query);
-    console.log('👻 ~ ChatController ~ login ~ data:', data);
     const objResult = {
       totalItems: +data?.[0]?.count,
       page: +query.page,
@@ -17,7 +16,21 @@ export class ChatController {
     };
     return {
       message: 'chatRoom success',
-      objResult,
+      data: objResult,
+    };
+  }
+  @Get('/:id')
+  async chatList(@Param('id') id: string, @Query() query: ChatQueryDto) {
+    const data = await this.chatService.chatList(id, query);
+    const objResult = {
+      totalItems: +data?.[0]?.count,
+      page: +query.page,
+      perPage: query.rowsPerPage,
+      items: data,
+    };
+    return {
+      message: 'chatList success',
+      data: objResult,
     };
   }
   @Post('send-message')
