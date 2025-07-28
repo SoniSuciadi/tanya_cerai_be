@@ -9,6 +9,7 @@ export interface ChatResponseDto {
 export interface Message {
   count: number;
   id: string;
+  sessionId: string;
   content: string;
   sender: 'user' | 'consultant';
   timestamp: Date;

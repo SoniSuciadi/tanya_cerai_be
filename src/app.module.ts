@@ -7,9 +7,18 @@ import { AuthenticationMiddleware } from './common/middlewares/authentication.mi
 import { UserModule } from './modules/user/user.module';
 import { DatabaseModule } from './common/database/database.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { AiAgentModule } from './modules/aiagent/aiagent.module';
+import { AiModule } from './modules/ai/ai.module';
 
 @Module({
-  imports: [AuthModule, UserModule, DatabaseModule, ChatModule],
+  imports: [
+    AuthModule,
+    UserModule,
+    DatabaseModule,
+    ChatModule,
+    AiAgentModule,
+    AiModule,
+  ],
   providers: [
     {
       provide: APP_INTERCEPTOR,

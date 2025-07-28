@@ -125,7 +125,7 @@ export class DatabaseService {
     const rowsPlaceholder = data
       .map(
         (_, rowIndex) =>
-          `(${columns.map((_, colIndex) => `$${rowIndex * columns.length + colIndex + 1}`).join(', ')}, now(), now(),'${this.user.get()?.name || null}', '${this.user.get()?.name || null}')`,
+          `(${columns.map((_, colIndex) => `$${rowIndex * columns.length + colIndex + 1}`).join(', ')}, now() + INTERVAL '${rowIndex + 1} second', now() + INTERVAL '${rowIndex + 1} second','${this.user.get()?.name || null}', '${this.user.get()?.name || null}')`,
       )
       .join(', ');
     let query = `INSERT INTO "${table}" (${columns.join(', ')}, created_at, updated_at,created_by, updated_by) VALUES ${rowsPlaceholder}`;

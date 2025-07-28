@@ -5,10 +5,6 @@ export class SendMessageDto {
   @IsString()
   @IsNotEmpty()
   message: string;
-
-  @IsString()
-  @IsNotEmpty()
-  chatRoom: string;
 }
 export class ChatQueryDto {
   @IsOptional()

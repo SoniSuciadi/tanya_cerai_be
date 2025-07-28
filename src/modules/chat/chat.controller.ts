@@ -33,12 +33,16 @@ export class ChatController {
       data: objResult,
     };
   }
-  @Post('send-message')
-  async login(@Body() sendMessageDto: SendMessageDto) {
-    await this.chatService.sendMessage(sendMessageDto);
+  @Post('send-message/:id')
+  async sendMessage(
+    @Body() sendMessageDto: SendMessageDto,
+    @Param('id') id: string,
+  ) {
+    const respon = await this.chatService.sendMessage(sendMessageDto, id);
 
     return {
       message: 'login success',
+      data: respon,
     };
   }
 }
