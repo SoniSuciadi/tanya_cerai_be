@@ -28,7 +28,13 @@ export class AiAgentService {
         })
         .toPromise();
 
-      return JSON.parse(response?.data.output);
+      const textResult = response?.data.output;
+
+      if (textResult.startsWith('[')) {
+        return JSON.parse(textResult);
+      } else {
+        return textResult.split('\n').filter((line) => line.trim() !== '');
+      }
     } catch (error) {
       throw new Error(
         'Error while sending message to webhook: ' + error.message,

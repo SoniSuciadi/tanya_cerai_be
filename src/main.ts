@@ -9,12 +9,12 @@ import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { DatabaseService } from './common/database/database.service';
 import * as dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+import * as utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/id';
 // init time
 dotenv.config();
-// dayjs.extend(utc);
-// dayjs.locale('id');
+dayjs.extend(utc);
+dayjs.locale('id');
 
 dotenv.config();
 class Application {

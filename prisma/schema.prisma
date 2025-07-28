@@ -15,9 +15,9 @@ model users {
   phone_number  String
   password      String
   refresh_token String?
-  created_at    DateTime   @default(now())
-  updated_at    DateTime   @default(now())
-  deleted_at    DateTime?
+  created_at    DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime   @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime?  @db.Timestamptz(6)
   created_by    String?
   updated_by    String?
   deleted_by    String?
@@ -30,9 +30,9 @@ model packages {
   name       String
   price      Decimal
   session    String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
-  deleted_at DateTime?
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
   created_by String?
   updated_by String?
   deleted_by String?
@@ -43,9 +43,9 @@ model packages {
 model sessions {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title      String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
-  deleted_at DateTime?
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
   created_by String?
   updated_by String?
   deleted_by String?
@@ -60,9 +60,9 @@ model chats {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   text       String
   session_id String?   @db.Uuid
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
-  deleted_at DateTime?
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
   sender     String?
   created_by String?
   updated_by String?
@@ -76,9 +76,9 @@ model orders {
   package_id     String    @db.Uuid
   payment_url    String
   paid_date      DateTime?
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @default(now())
-  deleted_at     DateTime?
+  created_at     DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at     DateTime? @db.Timestamptz(6)
   created_by     String?
   updated_by     String?
   deleted_by     String?
