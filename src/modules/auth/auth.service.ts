@@ -59,7 +59,7 @@ export class AuthService {
     });
   }
   getUserByIdAndRefreshToken(userId: string, refreshToken: string) {
-    const query = `SELECT id, name, email FROM users WHERE id = $<userId> AND refresh_token = $<refreshToken>`;
+    const query = `SELECT id, name, email, session_end AS "sessionEnd" FROM users WHERE id = $<userId> AND refresh_token = $<refreshToken>`;
     return this.databaseService.db.oneOrNone(query, {
       userId,
       refreshToken,

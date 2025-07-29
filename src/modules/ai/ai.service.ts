@@ -25,10 +25,6 @@ export class AiService {
         max_tokens: 1000,
         temperature: 0.7,
       });
-      console.log(
-        '👻 ~ AiService ~ generateQuestionTitle ~ completion:',
-        completion,
-      );
 
       return completion.choices[0].message.content || '';
     } catch (error) {

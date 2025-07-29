@@ -9,6 +9,10 @@ import { DatabaseModule } from './common/database/database.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { AiAgentModule } from './modules/aiagent/aiagent.module';
 import { AiModule } from './modules/ai/ai.module';
+import { PaymentController } from './modules/payment/payment.controller';
+import { PaymentService } from './modules/payment/payment.service';
+import { PaymentModule } from './modules/payment/payment.module';
+import { SseModule } from './modules/sse/sse.module';
 
 @Module({
   imports: [
@@ -18,6 +22,8 @@ import { AiModule } from './modules/ai/ai.module';
     ChatModule,
     AiAgentModule,
     AiModule,
+    PaymentModule,
+    SseModule,
   ],
   providers: [
     {
@@ -28,7 +34,9 @@ import { AiModule } from './modules/ai/ai.module';
       provide: APP_FILTER,
       useClass: HandleError,
     },
+    PaymentService,
   ],
+  controllers: [PaymentController],
 })
 export class AppModule {
   configure(consumer: MiddlewareBuilder) {
@@ -50,6 +58,10 @@ export class AppModule {
         {
           path: 'auth/logout',
           method: RequestMethod.GET,
+        },
+        {
+          path: 'payment/webhook',
+          method: RequestMethod.POST,
         },
         'stream',
       )
