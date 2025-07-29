@@ -1,0 +1,58 @@
+name: Build & Deploy Prod
+
+concurrency:
+  group: prod-deploy
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: ['production']
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Build App
+        run: npm run build
+
+      - name: Compress To Tar
+        uses: a7ul/tar-action@v1.1.0
+        with:
+          command: c
+          cwd: './'
+          files: |
+            dist/
+            package.json
+            package-lock.json
+            Dockerfile
+            captain-definition
+            tsconfig.json
+            nest-cli.json
+          outPath: deploy.tar
+
+      - name: Deploy App to CapRover
+        uses: caprover/deploy-from-github@main
+        with:
+          server: 'https://captain.zenika.id'
+          app: 'tanyacerai-be'
+          token: '${{ secrets.CAPROVER_TOKEN }}'
