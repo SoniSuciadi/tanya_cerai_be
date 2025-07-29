@@ -50,8 +50,10 @@ export class ChatService {
           transaction: tx,
         });
         const agentResponse = await this.aiAgentService.sendMessageToWebhook(
-          id,
-          sendMessageDto.message,
+          sessionId,
+          id == 'new'
+            ? `${this.userService.user.name} bertanya : "${sendMessageDto.message}"`
+            : sendMessageDto.message,
         );
 
         const agentChats = await this.databaseService.insertBulk<Message>({
