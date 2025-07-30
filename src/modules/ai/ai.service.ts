@@ -18,15 +18,20 @@ export class AiService {
         messages: [
           {
             role: 'system',
-            content: 'Buatkan title pendek untuk pertanyaan ini',
+            content: `buat judul singkat maks 4 kata untuk pertanyaan ini (ini pertanyaan scope perceraian) dalam bentuk JSON dengan property title :${inputText}`,
           },
-          { role: 'user', content: inputText },
+          {
+            role: 'user',
+            content: `buat judul singkat maks 4 kata untuk pertanyaan ini (ini pertanyaan scope perceraian) dalam bentuk JSON dengan property title :${inputText}`,
+          },
         ],
         max_tokens: 1000,
         temperature: 0.7,
       });
-
-      return completion.choices[0].message.content || '';
+      const answer = completion.choices[0].message.content ?? '';
+      return answer?.includes('title')
+        ? JSON.parse(answer).title
+        : answer?.toString();
     } catch (error) {
       throw new Error(
         'Error while communicating with OpenAI: ' + error.message,
