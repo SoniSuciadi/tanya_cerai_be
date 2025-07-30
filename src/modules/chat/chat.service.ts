@@ -26,6 +26,7 @@ export class ChatService {
           const title = await this.aiService.generateQuestionTitle(
             sendMessageDto.message,
           );
+          console.log('👻 ~ ChatService ~ sendMessage ~ title:', title);
 
           const newSessionId = await this.databaseService.insertOne<{
             id: string;
