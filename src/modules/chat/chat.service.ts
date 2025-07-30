@@ -82,9 +82,12 @@ export class ChatService {
     const { search, page, rowsPerPage, order, orderBy } = query;
     const offset = (page - 1) * rowsPerPage;
 
-    const whereQuery: string[] = [`s.deleted_at IS NULL`];
+    const whereQuery: string[] = [
+      `s.deleted_at IS NULL`,
+      's.user_id = $<userId>',
+    ];
     if (search) {
-      whereQuery.push(`(s.title ILIKE '%$<search:value>%')`);
+      whereQuery.push(`(s.title ILIKE '%$<search:value>%') `);
     }
 
     const q = `WITH LatestChat AS (
@@ -116,31 +119,38 @@ export class ChatService {
       search,
       perPage: rowsPerPage,
       offset,
+      userId: this.userService.get().id,
     });
   }
   async chatList(id: string, queries: ChatListQueryDto): Promise<Message[]> {
     const { page, rowsPerPage } = queries;
     const offset = (page - 1) * rowsPerPage;
 
-    const whereQuery: string[] = [`deleted_at IS NULL`, `session_id =$<id>`];
+    const whereQuery: string[] = [
+      `c.deleted_at IS NULL`,
+      `c.session_id =$<id>`,
+      `s.user_id =$<userId>`,
+    ];
 
     const q = `SELECT
       COUNT(*) OVER () AS count,
-      id,
-      text AS "content",
-      sender,
-      session_id AS "sessionId",
-      created_at AS "timestamp"
+      c.id,
+      c.text AS "content",
+      c.sender,
+      c.session_id AS "sessionId",
+      c.created_at AS "timestamp"
     FROM
-      chats
+      chats c
+      left join sessions s on s.id = session_id
     WHERE ${whereQuery.join(' AND ')}
-    ORDER BY created_at DESC
+    ORDER BY c.created_at DESC
     LIMIT $<perPage> OFFSET $<offset>
 `;
     return await this.databaseService.db.manyOrNone<Message>(q, {
       perPage: rowsPerPage,
       offset,
       id,
+      userId: this.userService.get().id,
     });
   }
 }
