@@ -89,7 +89,7 @@ export class PaymentService {
             orders o
             LEFT JOIN packages p ON o.package_id = p.id
             LEFT JOIN users u ON u.id=o.user_id
-        WHERE o.id = $<order_id>`,
+        WHERE o.id = $<orderId>`,
       {
         orderId,
       },
