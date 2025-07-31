@@ -75,6 +75,7 @@ export class PaymentService {
     this.logger.log(
       `Payment status for order ${order_id}: ${transaction_status}`,
     );
+    const orderId = order_id.split('_')[0];
     const order = await this.databaseService.db.oneOrNone<{
       userId: string;
       sessionEnd: string | null;
@@ -90,7 +91,7 @@ export class PaymentService {
             LEFT JOIN users u ON u.id=o.user_id
         WHERE o.id = $<order_id>`,
       {
-        order_id,
+        orderId,
       },
     );
 
@@ -104,7 +105,7 @@ export class PaymentService {
             paidDate: new Date().toISOString(),
           },
           where: {
-            id: order_id,
+            id: orderId,
           },
           transaction: t,
         });
@@ -135,13 +136,13 @@ export class PaymentService {
           });
           this.sseService.sendMessageToUser(order?.userId, {
             type: 'payment-success',
-            message: `Payment for order ${order_id} is successful`,
+            message: `Payment for order ${orderId} is successful`,
           });
         }
       });
-      return { message: `Payment for order ${order_id} is successful` };
+      return { message: `Payment for order ${orderId} is successful` };
     } else {
-      return { message: `Payment for order ${order_id} is not completed` };
+      return { message: `Payment for order ${orderId} is not completed` };
     }
   }
 
@@ -193,7 +194,7 @@ export class PaymentService {
 
       const transactionData = {
         transaction_details: {
-          order_id: order?.id,
+          order_id: `${order?.id}_TaCer`,
           gross_amount: selectedPackage?.price,
         },
         credit_card: {
