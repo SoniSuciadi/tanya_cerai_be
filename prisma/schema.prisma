@@ -76,6 +76,7 @@ model orders {
   user_id        String    @db.Uuid
   package_id     String    @db.Uuid
   amount         Int
+  order_id       String
   payment_url    String?
   paid_date      DateTime?
   paid_data      Json?
