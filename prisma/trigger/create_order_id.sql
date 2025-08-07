@@ -3,7 +3,7 @@ RETURNS TRIGGER AS $$
 DECLARE
     max_order_id integer;
 BEGIN
-    SELECT COALESCE(MAX(CAST(SUBSTRING(order_id, 9) AS integer)), 0)
+    SELECT COALESCE(MAX(CAST(REGEXP_REPLACE(order_id, '^\D*(\d+)$', '\1') AS integer)), 0)
     INTO max_order_id
     FROM orders;
 
