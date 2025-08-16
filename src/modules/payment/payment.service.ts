@@ -44,7 +44,7 @@ export class PaymentService {
     private sseService: SSEStreamService,
   ) {
     this.snap = new midtransClient.Snap({
-      isProduction: false,
+      isProduction: process.env.MIDTRANS_PRODUCTION === 'TRUE',
       serverKey: process.env.MIDTRANS_SERVER_KEY,
       clientKey: process.env.MIDTRANS_CLIENT_KEY,
     });
