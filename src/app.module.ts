@@ -63,6 +63,10 @@ export class AppModule {
           path: 'payment/webhook',
           method: RequestMethod.POST,
         },
+        {
+          path: 'aiagent/message-response',
+          method: RequestMethod.POST,
+        },
         'stream',
       )
       .forRoutes('*');

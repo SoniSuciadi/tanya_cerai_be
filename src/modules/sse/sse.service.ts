@@ -98,6 +98,7 @@ export class SSEStreamService {
         client.broadcast({
           type: message.type,
           message: message.message,
+          data: message.data,
         });
       });
     }

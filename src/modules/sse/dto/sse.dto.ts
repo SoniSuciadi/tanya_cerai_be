@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
 export class sendMessageToAllUsersDto {
   @IsString()
   @IsNotEmpty()
@@ -7,4 +7,8 @@ export class sendMessageToAllUsersDto {
   @IsString()
   @IsOptional()
   message?: string;
+
+  @IsOptional()
+  @IsObject()
+  data?: object;
 }

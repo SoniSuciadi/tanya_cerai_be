@@ -41,8 +41,10 @@ export class ChatController {
     const respon = await this.chatService.sendMessage(sendMessageDto, id);
 
     return {
-      message: 'login success',
-      data: respon,
+      message: 'send-message success',
+      data: {
+        sessionId: respon,
+      },
     };
   }
 }

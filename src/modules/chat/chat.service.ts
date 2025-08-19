@@ -18,15 +18,14 @@ export class ChatService {
   async sendMessage(
     sendMessageDto: SendMessageDto,
     id: string,
-  ): Promise<Message[]> {
+  ): Promise<string> {
     const response = await this.databaseService.db.tx(
-      async (tx): Promise<Message[]> => {
+      async (tx): Promise<string> => {
         let sessionId = id;
         if (sessionId == 'new') {
           const title = await this.aiService.generateQuestionTitle(
             sendMessageDto.message,
           );
-          console.log('👻 ~ ChatService ~ sendMessage ~ title:', title);
 
           const newSessionId = await this.databaseService.insertOne<{
             id: string;
@@ -50,30 +49,14 @@ export class ChatService {
           },
           transaction: tx,
         });
-        const agentResponse = await this.aiAgentService.sendMessageToWebhook(
+        this.aiAgentService.sendMessageToWebhook(
           sessionId,
           id == 'new'
             ? `${this.userService.user.name} bertanya : "${sendMessageDto.message}"`
             : sendMessageDto.message,
         );
 
-        const agentChats = await this.databaseService.insertBulk<Message>({
-          table: 'chats',
-          data: agentResponse.map((item) => ({
-            sessionId,
-            text: item,
-            sender: 'consultant',
-          })),
-          transaction: tx,
-          returning: [
-            'id',
-            'text AS "content"',
-            'sender',
-            'created_at AS "timestamp"',
-            'session_id AS "sessionId"',
-          ],
-        });
-        return agentChats ?? [];
+        return sessionId;
       },
     );
 
