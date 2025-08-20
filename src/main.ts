@@ -23,7 +23,7 @@ class Application {
   // ----
   private configureMiddleware() {
     this.app.enableCors({
-      origin: process.env.FE_ORIGIN?.split(',') || '*',
+      origin: process.env.FE_ORIGIN,
       methods: 'GET,PATCH,POST,DELETE',
       allowedHeaders: 'Content-Type, Accept, ClientPath, Authorization',
       credentials: true,

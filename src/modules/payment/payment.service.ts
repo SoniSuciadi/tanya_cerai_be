@@ -4,8 +4,8 @@ import * as crypto from 'crypto';
 import { CreatePayment } from './payment.dto';
 import { DatabaseService } from 'src/common/database/database.service';
 import { UserService } from '../user/user.service';
-import { SSEStreamService } from '../sse/sse.service';
 import * as dayjs from 'dayjs';
+import { WebsocketGateway } from '../websocket/websocket.gateway';
 
 export interface MidtransWebhookPayload {
   transaction_type: string;
@@ -41,7 +41,7 @@ export class PaymentService {
   constructor(
     private databaseService: DatabaseService,
     private userService: UserService,
-    private sseService: SSEStreamService,
+    private wsGateaway: WebsocketGateway,
   ) {
     this.snap = new midtransClient.Snap({
       isProduction: process.env.MIDTRANS_PRODUCTION === 'TRUE',
@@ -134,9 +134,10 @@ export class PaymentService {
             },
             transaction: t,
           });
-          this.sseService.sendMessageToUser(order?.userId, {
-            type: 'payment-success',
-            message: `Payment for order ${orderId} is successful`,
+          this.wsGateaway.sendToUser({
+            userId: order?.userId,
+            event: 'payment-success',
+            message: 'payment-success event',
           });
         }
       });

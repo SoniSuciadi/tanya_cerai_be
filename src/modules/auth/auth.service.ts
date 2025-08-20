@@ -21,7 +21,7 @@ export class AuthService {
     if (!compareHash(password, user.password)) {
       throw new ForbiddenException('Email atau password salah');
     }
-    const { id } = user;
+    const { id }: { id: string } = user;
 
     const refreshToken = genRefreshToken({ id });
 
@@ -33,6 +33,7 @@ export class AuthService {
         accessToken,
       },
       refreshToken,
+      id,
     };
   }
   getUserByEmail(email: string) {

@@ -12,7 +12,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
 import { PaymentModule } from './modules/payment/payment.module';
-import { SseModule } from './modules/sse/sse.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { SseModule } from './modules/sse/sse.module';
     AiAgentModule,
     AiModule,
     PaymentModule,
-    SseModule,
+    WebsocketModule,
   ],
   providers: [
     {

@@ -14,12 +14,14 @@ import { AuthService } from './auth.service';
 import { cookieOption } from 'src/common/utils/cookieOptions';
 import { genAccessToken } from 'src/common/helpers/token';
 import { UserService } from '../user/user.service';
+import { WebsocketGateway } from '../websocket/websocket.gateway';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private user: UserService,
+    private wsGateaway: WebsocketGateway,
   ) {}
   @Post('login')
   async login(
@@ -27,6 +29,11 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const login = await this.authService.loginService(loginDto);
+    this.wsGateaway.sendToUser({
+      userId: login.id,
+      event: 'another-device-logged-in',
+      message: 'user logged in',
+    });
     const { data, refreshToken } = login;
     res.cookie('refresh_token', refreshToken, cookieOption);
 
