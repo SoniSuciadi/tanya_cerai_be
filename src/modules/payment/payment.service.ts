@@ -146,7 +146,10 @@ export class PaymentService {
     }
   }
 
-  async createTransaction(createData: CreatePayment): Promise<string> {
+  async createTransaction(
+    createData: CreatePayment,
+    origin: string,
+  ): Promise<string> {
     const url = await this.databaseService.db.tx<string>(async (t) => {
       const selectedPackage = await t.oneOrNone<{
         id: string;
@@ -164,6 +167,24 @@ export class PaymentService {
         `,
         { packageName: createData.packageName },
       );
+      const existingaActiveOrder = await t.oneOrNone<{ paymentUrl: string }>(
+        `SELECT payment_url AS "paymentUrl"
+        FROM orders 
+        WHERE user_id = $<userId>
+          AND package_id = $<packageId>
+          AND amount = $<pacakgeAmount>
+          AND payment_status = 'pending'
+          AND created_at >= CURRENT_TIMESTAMP - INTERVAL '20 hours';
+    `,
+        {
+          userId: this.userService.get().id,
+          packageId: selectedPackage?.id,
+          pacakgeAmount: selectedPackage?.price,
+        },
+      );
+      if (existingaActiveOrder) {
+        return existingaActiveOrder.paymentUrl;
+      }
       const order = await this.databaseService.insertOne<{ id: string }>({
         table: 'orders',
         data: {
@@ -199,6 +220,9 @@ export class PaymentService {
         },
         credit_card: {
           secure: true,
+        },
+        callbacks: {
+          finish: origin,
         },
         customer_details: {
           first_name: user?.name,

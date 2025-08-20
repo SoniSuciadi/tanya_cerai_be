@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Logger } from '@nestjs/common';
+import { Controller, Post, Body, Logger, Headers } from '@nestjs/common';
 import {
   MidtransWebhookPayload,
   PaymentService,
@@ -13,10 +13,15 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('')
-  async createPayment(@Body() paymentData: CreatePayment) {
+  async createPayment(
+    @Body() paymentData: CreatePayment,
+    @Headers('origin') origin: string,
+  ) {
     try {
-      const paymentUrl =
-        await this.paymentService.createTransaction(paymentData);
+      const paymentUrl = await this.paymentService.createTransaction(
+        paymentData,
+        origin,
+      );
       return {
         message: 'success createPayment',
         data: {
